@@ -14,7 +14,7 @@ resource "aws_vpc" "my-vpc1" {
      enable_dns_hostnames = "true"
      
     tags = {
-        Name = "Cairo VPC"
+        Name = "my 1st VPC"
     }
 }
 

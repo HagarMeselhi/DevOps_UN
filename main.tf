@@ -2,54 +2,54 @@ provider "aws" {
 region = "us-west-2"
 }
 
-variable "vpc-cidr-block" {
+variable "vpc-cidr-block1" {
 }
 
-variable "subnet-cidr-block1" {
+variable "subnet-cidr-block11" {
 
 }
-resource "aws_vpc" "cairo-vpc" {
-    cidr_block = var.vpc-cidr-block
+resource "aws_vpc" "alex-vpc" {
+    cidr_block = var.vpc-cidr-block1
 
      enable_dns_hostnames = "true"
      
     tags = {
-        Name = "Cairo VPC"
+        Name = "Alex VPC"
     }
 }
 
-resource "aws_subnet" "public-subnet-cairo" {
-  vpc_id     = aws_vpc.cairo-vpc.id
-  cidr_block = var.subnet-cidr-block1
+resource "aws_subnet" "public-subnet-alex" {
+  vpc_id     = aws_vpc.alex-vpc.id
+  cidr_block = var.subnet-cidr-block11
   availability_zone = "us-west-2a"
 
   tags = {
-    Name = "Public cairo sub"
+    Name = "Public alex sub"
   }
 }
 
-resource "aws_internet_gateway" "inter-gw" {
-  vpc_id = aws_vpc.cairo-vpc.id
+resource "aws_internet_gateway" "inter-gateway" {
+  vpc_id = aws_vpc.alex-vpc.id
 
   tags = {
-    Name = "Internet Gateway Cairo"
+    Name = "Internet Gateway Alex"
   }
 }
-resource "aws_route_table_association" "rt-cairo" {
-  subnet_id      = aws_subnet.public-subnet-cairo.id
-  route_table_id = aws_route_table.cairo-route-table.id
+resource "aws_route_table_association" "rt-alex" {
+  subnet_id      = aws_subnet.public-subnet-alex.id
+  route_table_id = aws_route_table.alex-route-table.id
 }
 
-resource "aws_route_table" "cairo-route-table" {
-  vpc_id = aws_vpc.cairo-vpc.id
+resource "aws_route_table" "alex-route-table" {
+  vpc_id = aws_vpc.alex-vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.inter-gw.id
+    gateway_id = aws_internet_gateway.inter-gateway.id
   }
 
   tags = {
-    Name = "public Cairo Route Table"
+    Name = "public Alex Route Table"
   }
 }
 
@@ -58,9 +58,9 @@ resource "aws_instance" "Master-node" {
   ami = "ami-0ceecbb0f30a902a6"
   instance_type = "t3.small"
   associate_public_ip_address = true
-  subnet_id      = aws_subnet.public-subnet-cairo.id
+  subnet_id      = aws_subnet.public-subnet-alex.id
   count = 1
-  vpc_security_group_ids = [aws_security_group.cairo_tls.id]
+  vpc_security_group_ids = [aws_security_group.alex_tls.id]
   key_name = "vockey"
     
   user_data = <<EOF
@@ -87,10 +87,10 @@ resource "aws_instance" "Master-node" {
 
 
 
-resource "aws_security_group" "cairo_tls" {
+resource "aws_security_group" "alex_tls" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic"
-  vpc_id      = aws_vpc.cairo-vpc.id
+  vpc_id      = aws_vpc.alex-vpc.id
 
   ingress {
     description      = "TLS from VPC"

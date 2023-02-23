@@ -8,7 +8,7 @@ variable "vpc-cidr-block" {
 variable "subnet-cidr-block1" {
 
 }
-resource "aws_vpc" "cairo-vpc" {
+resource "aws_vpc" "my-vpc1" {
     cidr_block = var.vpc-cidr-block
 
      enable_dns_hostnames = "true"
@@ -19,7 +19,7 @@ resource "aws_vpc" "cairo-vpc" {
 }
 
 resource "aws_subnet" "public-subnet-cairo" {
-  vpc_id     = aws_vpc.cairo-vpc.id
+  vpc_id     = aws_vpc.my-vpc1.id
   cidr_block = var.subnet-cidr-block1
   availability_zone = "us-west-2a"
 
@@ -29,7 +29,7 @@ resource "aws_subnet" "public-subnet-cairo" {
 }
 
 resource "aws_internet_gateway" "inter-gw" {
-  vpc_id = aws_vpc.cairo-vpc.id
+  vpc_id = aws_vpc.my-vpc1.id
 
   tags = {
     Name = "Internet Gateway Cairo"
